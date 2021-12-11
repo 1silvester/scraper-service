@@ -1,6 +1,8 @@
 package com.classicalBooks.scraperService.service;
 
-//import com.classicalBooks.scraperService.database.Database;
+
+import com.classicalBooks.scraperService.database.AuthorRepository;
+import com.classicalBooks.scraperService.models.Authors;
 import com.classicalBooks.scraperService.models.Text;
 import com.classicalBooks.scraperService.models.BookList;
 import org.jsoup.Jsoup;
@@ -16,8 +18,8 @@ import java.util.*;
 @Service
 public class WebScraperService implements ScraperServices{
 
-//    @Autowired
-//    Database database;
+    @Autowired
+    AuthorRepository authorRepository;
 
 
     @Value("${classical.mit.base}")
@@ -56,7 +58,7 @@ public class WebScraperService implements ScraperServices{
                 if (l.attr("target").equals("browse"))
                 {
                     authors.put(l.text(), l.attr("href"));
-
+                    authorRepository.save(new Authors(l.text(), l.attr("href")));
 //                    textLink = new TextLink(l.text(), l.attr("href"));
 //                    database.save(textLink);
                 }

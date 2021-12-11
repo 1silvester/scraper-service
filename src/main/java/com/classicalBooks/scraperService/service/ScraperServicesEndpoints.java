@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/scaper")
+@RequestMapping("/scraper")
 public class ScraperServicesEndpoints {
 
 
