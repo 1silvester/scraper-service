@@ -2,9 +2,11 @@ package com.classicalBooks.scraperService.service;
 
 
 import com.classicalBooks.scraperService.database.AuthorRepository;
+import com.classicalBooks.scraperService.database.BooksPartsRepository;
+import com.classicalBooks.scraperService.database.BooksRepository;
 import com.classicalBooks.scraperService.models.Authors;
+import com.classicalBooks.scraperService.models.Books;
 import com.classicalBooks.scraperService.models.Text;
-import com.classicalBooks.scraperService.models.BookList;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -20,6 +22,12 @@ public class WebScraperService implements ScraperServices{
 
     @Autowired
     AuthorRepository authorRepository;
+
+    @Autowired
+    BooksRepository booksRepository;
+
+    @Autowired
+    BooksPartsRepository booksPartsRepository;
 
 
     @Value("${classical.mit.base}")
@@ -37,9 +45,7 @@ public class WebScraperService implements ScraperServices{
 
     private final Map<String, String> booksAndLinks = new HashMap<>();
 
-    private Map<String, String> books = new HashMap<>();
-
-    private Map<String, String> bookLinks = new HashMap<>();
+    private Map<String, String> bookLinksMap = new HashMap<>();
 
     private List<Text> authorTextObjects;
     private Text textObject = new Text();
@@ -47,7 +53,7 @@ public class WebScraperService implements ScraperServices{
     @Override
     public Map<String,String> listAuthors() {
         System.out.println(mitUrl);
-        BookList bookList = new BookList();
+        Books books = new Books();
         try {
             Document document = Jsoup.connect(mitUrl).get();
 
@@ -84,15 +90,27 @@ public class WebScraperService implements ScraperServices{
         return authors;
     }
 
-
+    /*
+    * @param authorName The author name you want to get accessed from the database.
+    *
+    * Author name is used as a key to find the final part of the URL. Forming a URL such as
+    * the following URL http://classics.mit.edu/Browse/browse-Homer.html.
+    * This can then be used to scrape the books from that author.
+    *
+    * @return schema key: Book Title , value: link
+    * @return key: Homeric Hymns , value: /Homer/hh.1.html
+    * */
     @Override
     public Map<String, String> searchBooksByAuthors(String authorName) {
 //        Map<String, String> authorMap = listAuthors();
-        String authorUrl = authors.get(authorName);
-        String concatUrl = mitBrowse + authorUrl;
+        Authors authorUrl = authorRepository.findByName(authorName);
+        System.out.println(authorUrl.getName() +" " +authorUrl.getLink());
+//        String authorUrl = authors.get(authorName);
+        String concatUrl = mitBrowse + authorUrl.getLink();
 
-        BookList bookList = new BookList();
-        List<String> list = new ArrayList<>();
+        Books books = new Books();
+        List<Books> booksList = new ArrayList<>();
+        Map<String, String> list = new HashMap<>();
         try
         {
             final Document document = Jsoup.connect(concatUrl).get();
@@ -102,11 +120,16 @@ public class WebScraperService implements ScraperServices{
                 if(b.attr("target").equals("_parent"))
                 {
                     booksAndLinks.put(b.text(), b.attr("href"));
+                    list.put(b.text(), b.attr("href"));
+                    booksList.add(new Books(b.text(), b.attr("href")));
+                    booksRepository.save(new Books(b.text(), b.attr("href")));
                 }
-                list.add(b.select("u").text());
+//                list.add(b.select("u").text());
+//                list.forEach((k,v) -> System.out.println("key "+ k + " " + v ));
             }
+
+//            booksRepository.save(new Books("","", authorName));
             //this is to make a database in the near future
-            bookList = new BookList(authors.get(authorName), list);
         }
         catch (Exception e)
         {
@@ -115,20 +138,37 @@ public class WebScraperService implements ScraperServices{
         return booksAndLinks;
     }
 
+    /**
+     * @param title of the book
+     *          The general schema for the return
+     * @returns "Book/book part " "html Link /txt link"
+     *
+     *          Two different kinds of returns are possible from this method.
+     *          They are placed in two different objects. The html requires further processing.
+     *
+     * @returns "Book VII": "iliad.7.vii.html",
+     * @returns "The Great Learning": "learning.1b.txt"
+     */
     @Override
-    public Map<String, String> searchBooks(String book) {
-        String urlTitle = booksAndLinks.get(book);
-        String concatUrl = mitBase + urlTitle;
+    public Map<String, String> searchBooks(String title) {
+        Books books = booksRepository.findByTitle(title);
+        String concatUrl = mitBase + books.getTitleLink();
+//        String urlTitle = booksAndLinks.get(title);
+//        String concatUrl = mitBase + urlTitle;
 
-        bookLinks = getTextHtmlLink(concatUrl);
 
-        if(bookLinks.isEmpty())
+        bookLinksMap = getTextHtmlLink(concatUrl);
+
+        if(bookLinksMap.isEmpty())
         {
-            books = getTextFileLink(book, concatUrl);
-         return books;
+            Map<String, String> books1 = getTextFileLink(title, concatUrl);
+
+            books1.forEach((k, v) -> new Books(k,v));
+
+         return books1;
         }
         else
-            return bookLinks;
+            return bookLinksMap;
     }
 
     @Override
@@ -137,7 +177,7 @@ public class WebScraperService implements ScraperServices{
 
         String bookPartName = "";
         System.out.println(book);
-        Set<String> keySet = bookLinks.keySet();
+        Set<String> keySet = bookLinksMap.keySet();
 
             for(String key : keySet)
             {
@@ -146,7 +186,7 @@ public class WebScraperService implements ScraperServices{
                 System.out.println("bookPartName " + bookPartName);
             }
 
-        String bookPart = bookLinks.get(part);
+        String bookPart = bookLinksMap.get(part);
         System.out.println("author " + author);
         String url = mitBase + author +"/"+ bookPart;
         System.out.println(url);

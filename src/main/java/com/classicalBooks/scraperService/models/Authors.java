@@ -2,6 +2,7 @@ package com.classicalBooks.scraperService.models;
 
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity(name = "Authors")
 public class Authors {
@@ -37,12 +38,22 @@ public class Authors {
     )
     private String link;
 
+    @OneToMany()
+    private List<Books> books;
+
     public Authors() {
     }
 
     public Authors(String name, String link) {
         this.name = name;
         this.link = link;
+
+    }
+
+    public Authors(String name, List<Books> books)
+    {
+        this.name = name;
+        this.books = books;
     }
 
     public Long getId() {
@@ -67,6 +78,14 @@ public class Authors {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public List<Books> getBookListList() {
+        return books;
+    }
+
+    public void setBookListList(List<Books> books) {
+        this.books = books;
     }
 
     @Override

@@ -1,6 +1,25 @@
 package com.classicalBooks.scraperService.models;
 
+import javax.persistence.*;
+
+@Entity(name = "Text")
 public class Text {
+
+    @Id
+    @SequenceGenerator(
+            name = "text_sequence",
+            sequenceName = "text_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "text_sequence"
+    )
+    @Column(
+            name= "id",
+            updatable = false
+    )
+    private Long id;
 
     private String author;
     private String title;
@@ -8,6 +27,11 @@ public class Text {
     private String dateWritten;
     private String translationProject;
 
+    @ManyToOne(
+            cascade = CascadeType.ALL,
+            targetEntity = Books.class
+    )
+    private Books books;
 
     public Text() {
 
@@ -79,5 +103,17 @@ public class Text {
 
     public void setTranslationProject(String translationProject) {
         this.translationProject = translationProject;
+    }
+
+    @Override
+    public String toString() {
+        return "Text{" +
+                "id=" + id +
+                ", author='" + author + '\'' +
+                ", title='" + title + '\'' +
+                ", translator='" + translator + '\'' +
+                ", dateWritten='" + dateWritten + '\'' +
+                ", translationProject='" + translationProject + '\'' +
+                '}';
     }
 }

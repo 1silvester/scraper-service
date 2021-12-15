@@ -28,15 +28,25 @@ public class ScraperServicesEndpoints {
         return webScraperService.searchBooksByAuthors(authorName);
     }
 
+//    @RequestMapping(value = "/authors", method = RequestMethod.GET, produces = "application/json")
+//    public List<String> listAuthors()
+//    {
+////        return scraperService.ScraperServ().listAuthors();
+//        List<String> stringList = new ArrayList<>();
+//
+//        webScraperService.listAuthors().forEach((k,v) -> stringList.add(k));
+//
+//        return stringList;
+//    }
     @RequestMapping(value = "/authors", method = RequestMethod.GET, produces = "application/json")
-    public List<String> listAuthors()
+    public Map<String, String> listAuthors()
     {
 //        return scraperService.ScraperServ().listAuthors();
-        List<String> stringList = new ArrayList<>();
+//        List<String> stringList = new ArrayList<>();
+//
+//        webScraperService.listAuthors().forEach((k,v) -> stringList.add(k));
 
-        webScraperService.listAuthors().forEach((k,v) -> stringList.add(k));
-
-        return stringList;
+        return webScraperService.listAuthors();
     }
 
     @RequestMapping(value = "by-book/{book}", method = RequestMethod.GET, produces = "application/json")
