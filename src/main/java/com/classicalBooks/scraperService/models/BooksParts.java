@@ -18,17 +18,33 @@ public class BooksParts {
     )
     private long id;
     @Column(
-            name = "chapter",
-            updatable = true,
+            name = "book",
+            updatable = false,
+            unique = false,
             columnDefinition = "Text"
     )
-    private String chapter;
+    private String book;
     @Column(
-            name = "chapterLink",
+            name = "part",
+            updatable = true,
+            columnDefinition = "Text",
+            unique = true
+    )
+    private String part;
+    @Column(
+            name = "partLink",
+            updatable = true,
+            columnDefinition = "Text",
+            unique = true
+    )
+    private String partLink;
+
+    @Column(
+            name = "author",
             updatable = true,
             columnDefinition = "Text"
     )
-    private String chapterLink;
+    private String author;
 
     @ManyToOne
     private Books books;
@@ -37,9 +53,12 @@ public class BooksParts {
     public BooksParts() {
     }
 
-    public BooksParts(String chapter, String chapterLink) {
-        this.chapter = chapter;
-        this.chapterLink = chapterLink;
+    public BooksParts(String author, String book, String part, String partLink)
+    {
+        this.author = author;
+        this.book = book;
+        this.part = part;
+        this.partLink = partLink;
     }
 
     public long getId() {
@@ -50,20 +69,20 @@ public class BooksParts {
         this.id = id;
     }
 
-    public String getChapter() {
-        return chapter;
+    public String getPart() {
+        return part;
     }
 
-    public void setChapter(String chapter) {
-        this.chapter = chapter;
+    public void setPart(String part) {
+        this.part = part;
     }
 
-    public String getChapterLink() {
-        return chapterLink;
+    public String getPartLink() {
+        return partLink;
     }
 
-    public void setChapterLink(String chapterLink) {
-        this.chapterLink = chapterLink;
+    public void setPartLink(String partLink) {
+        this.partLink = partLink;
     }
 
     public Books getBooks() {

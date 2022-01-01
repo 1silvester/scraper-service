@@ -19,45 +19,49 @@ public class ScraperServicesEndpoints {
     WebScraperService webScraperService;
 
 
-    //search book by author name
-    @RequestMapping(value = "/by-author/{authorName}", method = RequestMethod.GET, produces = "application/json")
+
+    @RequestMapping(value = "/authors/{authorName}", method = RequestMethod.GET, produces = "application/json")
     public Map<String, String> searchBookByAuthorName(@PathVariable("authorName") String authorName)
     {
 
 //        return scraperService.ScraperServ().searchBookByAuthor(authorName);
-        return webScraperService.searchBooksByAuthors(authorName);
+        if (webScraperService.searchBooksByAuthors(authorName) != null)
+            return webScraperService.searchBooksByAuthors(authorName);
+        else
+            return searchBookByAuthorName(authorName);
     }
 
-//    @RequestMapping(value = "/authors", method = RequestMethod.GET, produces = "application/json")
-//    public List<String> listAuthors()
-//    {
-////        return scraperService.ScraperServ().listAuthors();
-//        List<String> stringList = new ArrayList<>();
-//
-//        webScraperService.listAuthors().forEach((k,v) -> stringList.add(k));
-//
-//        return stringList;
-//    }
+
     @RequestMapping(value = "/authors", method = RequestMethod.GET, produces = "application/json")
     public Map<String, String> listAuthors()
     {
-//        return scraperService.ScraperServ().listAuthors();
-//        List<String> stringList = new ArrayList<>();
-//
-//        webScraperService.listAuthors().forEach((k,v) -> stringList.add(k));
-
-        return webScraperService.listAuthors();
+        if (webScraperService.listAuthors() != null)
+        {
+            return webScraperService.listAuthors();
+        }
+        else
+            return listAuthors();
     }
 
-    @RequestMapping(value = "by-book/{book}", method = RequestMethod.GET, produces = "application/json")
-    public Map<String, String> searchBooks( @PathVariable("book") String book)
+    @RequestMapping(value = "/authors/{author}/{book}", method = RequestMethod.GET, produces = "application/json")
+    public Map<String, String> searchBooks(@PathVariable("author") String author ,@PathVariable("book") String book)
     {
-        return webScraperService.searchBooks(book);
+        if (webScraperService.searchBooks(author ,book) != null)
+        {
+            return webScraperService.searchBooks(author ,book);
+        }
+        else
+            return searchBooks(author,book);
     }
 
-    @RequestMapping(value = "{author}/{book}/{part}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/authors/{author}/{book}/{part}", method = RequestMethod.GET, produces = "application/json")
     public Map<String, String> searchBooksByPart(@PathVariable("author") String author, @PathVariable("book") String book, @PathVariable("part") String part)
     {
-        return webScraperService.searchBooksByPart(author, book, part);
+        if (webScraperService.searchBooksByPart(author, book, part) != null)
+        {
+            return webScraperService.searchBooksByPart(author, book, part);
+        }
+        else
+            return searchBooksByPart(author,book,part);
     }
 }

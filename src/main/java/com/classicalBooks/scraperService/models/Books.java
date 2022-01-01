@@ -34,22 +34,17 @@ public class Books {
     @Column(
             name = "titleLink",
             updatable = true,
-            columnDefinition = "TEXT"
+            columnDefinition = "TEXT",
+            unique = true
     )
     private String titleLink;
-    @Column(
-            name="titlePart",
-            updatable = true,
-            columnDefinition = "TEXT"
-    )
-    private String titlePart;
 
     @Column(
-            name = "titlePartLink",
-            updatable = true,
+            name = "authorName",
+            updatable = false,
             columnDefinition = "Text"
     )
-    private String titlePartLink;
+    private String authorName;
 //    @ManyToOne(
 //            cascade = {CascadeType.ALL},
 //            targetEntity = Authors.class
@@ -86,6 +81,17 @@ public class Books {
         this.titleLink = titleLink;
         this.author_id = author_id;
     }
+    public Books(String title, String titleLink,String authorName, Long author_id) {
+        this.title = title;
+        this.titleLink = titleLink;
+        this.authorName = authorName;
+        this.author_id = author_id;
+    }
+    public Books(String title, String titleLink,String authorName) {
+        this.title = title;
+        this.titleLink = titleLink;
+        this.authorName = authorName;
+    }
 
 //    public String getAuthor() {
 //        return author;
@@ -117,22 +123,6 @@ public class Books {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getTitlePart() {
-        return titlePart;
-    }
-
-    public void setTitlePart(String titlePart) {
-        this.titlePart = titlePart;
-    }
-
-    public String getTitlePartLink() {
-        return titlePartLink;
-    }
-
-    public void setTitlePartLink(String titlePartLink) {
-        this.titlePartLink = titlePartLink;
     }
 
     public Long getAuthor_id() {

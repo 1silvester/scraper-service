@@ -21,11 +21,61 @@ public class Text {
     )
     private Long id;
 
+    @Column(
+            name="author",
+            updatable = true,
+            columnDefinition = "Text",
+            unique = false
+    )
     private String author;
+
+    @Column(
+            name="title",
+            updatable = true,
+            columnDefinition = "Text",
+            unique = false
+    )
     private String title;
+
+    @Column(
+            name="part",
+            updatable = true,
+            columnDefinition = "Text",
+            unique = true
+    )
+    private String part;
+
+    @Column(
+            name = "translator",
+            updatable = true,
+            columnDefinition = "Text",
+            unique = false
+    )
     private String translator;
+
+    @Column(
+            name = "dateWritten",
+            updatable = true,
+            columnDefinition = "Text",
+            unique = false
+    )
     private String dateWritten;
+
+    @Column(
+            name = "translationProject",
+            updatable = true,
+            columnDefinition = "Text",
+            unique = false
+    )
     private String translationProject;
+
+    @Column(
+            name="textFileLink",
+            updatable = true,
+            columnDefinition = "Text",
+            unique = true
+    )
+    private String textFileLink;
 
     @ManyToOne(
             cascade = CascadeType.ALL,
@@ -37,32 +87,48 @@ public class Text {
 
     }
 
-    public Text(String author,String title)
+    public Text(String author, String title, String part, String translator, String textFileLink)
     {
         super();
         this.author = author;
         this.title = title;
+        this.part = part;
+        this.translator = translator;
+        this.textFileLink = textFileLink;
     }
 
-
-    public Text(String author, String title, String translator, String dateWritten)
+    public Text(String author, String title,String translator, String textFileLink)
     {
         super();
         this.author = author;
         this.title = title;
         this.translator = translator;
-        this.dateWritten = dateWritten;
-
+        this.textFileLink = textFileLink;
     }
 
-    public Text(String author, String title, String translator, String dateWritten, String translationProject)
+
+    public Text(String author, String title,String part ,String translator, String dateWritten, String textFileLink)
     {
         super();
         this.author = author;
         this.title = title;
+        this.part = part;
+        this.translator = translator;
+        this.dateWritten = dateWritten;
+        this.textFileLink = textFileLink;
+
+    }
+
+    public Text(String author, String title,String part ,String translator, String dateWritten, String translationProject, String textFileLink)
+    {
+        super();
+        this.author = author;
+        this.title = title;
+        this.part = part;
         this.translator = translator;
         this.dateWritten = dateWritten;
         this.translationProject = translationProject;
+        this.textFileLink = textFileLink;
     }
 
     public String getAuthor() {
