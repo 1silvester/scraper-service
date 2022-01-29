@@ -16,10 +16,6 @@ import java.util.*;
 @Service
 public class WebScraperService implements ScraperServices{
 
-//    @Autowired
-//    Database database;
-
-
     @Value("${classical.mit.base}")
     private String mitBase;
 
@@ -45,7 +41,7 @@ public class WebScraperService implements ScraperServices{
     @Override
     public Map<String,String> listAuthors() {
         System.out.println(mitUrl);
-        BookList bookList = new BookList();
+
         try {
             Document document = Jsoup.connect(mitUrl).get();
 
@@ -56,22 +52,12 @@ public class WebScraperService implements ScraperServices{
                 if (l.attr("target").equals("browse"))
                 {
                     authors.put(l.text(), l.attr("href"));
-
-//                    textLink = new TextLink(l.text(), l.attr("href"));
-//                    database.save(textLink);
                 }
             }
         }
         catch (Exception exception){
             exception.printStackTrace();
         }
-
-//        database.findAll().forEach(textLink1 -> {
-//            System.out.println(textLink1.getAuthor());
-//        });
-
-
-//      authors.forEach((k,v) -> System.out.println("key: "+ k + " value: "+ v));
 
 
         /*
@@ -85,11 +71,9 @@ public class WebScraperService implements ScraperServices{
 
     @Override
     public Map<String, String> searchBooksByAuthors(String authorName) {
-//        Map<String, String> authorMap = listAuthors();
         String authorUrl = authors.get(authorName);
         String concatUrl = mitBrowse + authorUrl;
 
-        BookList bookList = new BookList();
         List<String> list = new ArrayList<>();
         try
         {
@@ -103,8 +87,7 @@ public class WebScraperService implements ScraperServices{
                 }
                 list.add(b.select("u").text());
             }
-            //this is to make a database in the near future
-            bookList = new BookList(authors.get(authorName), list);
+
         }
         catch (Exception e)
         {
@@ -192,6 +175,4 @@ public class WebScraperService implements ScraperServices{
         }
         return textLink;
     }
-
-
 }

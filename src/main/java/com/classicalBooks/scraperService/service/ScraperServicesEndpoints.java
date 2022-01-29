@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/scaper")
+@RequestMapping("/scraper")
 public class ScraperServicesEndpoints {
 
 
@@ -23,15 +23,12 @@ public class ScraperServicesEndpoints {
     @RequestMapping(value = "/by-author/{authorName}", method = RequestMethod.GET, produces = "application/json")
     public Map<String, String> searchBookByAuthorName(@PathVariable("authorName") String authorName)
     {
-
-//        return scraperService.ScraperServ().searchBookByAuthor(authorName);
         return webScraperService.searchBooksByAuthors(authorName);
     }
 
     @RequestMapping(value = "/authors", method = RequestMethod.GET, produces = "application/json")
     public List<String> listAuthors()
     {
-//        return scraperService.ScraperServ().listAuthors();
         List<String> stringList = new ArrayList<>();
 
         webScraperService.listAuthors().forEach((k,v) -> stringList.add(k));
